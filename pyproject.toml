@@ -1,7 +1,7 @@
 [project]
 name = "open-parcel"
 version = "0.1.0"
-description = "Add your description here"
+
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -52,3 +52,10 @@ python-version = "3.13"
 [tool.ty.rules]
 # example: bump specific rules to error/warn if you want stricter defaults
 # possibly-unbound-attribute = "error"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatchling.build.targets.wheel]
+packages = ["src/open_parcel"]
