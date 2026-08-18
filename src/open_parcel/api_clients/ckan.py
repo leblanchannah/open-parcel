@@ -30,8 +30,5 @@ for dataset in datasets:
         file_resp = requests.get(resource["url"])
         file_resp.raise_for_status()
 
-        out_path = (
-            data_dir_out
-            / f"{dataset['file_name']}_{resource['format'].lower()}.{resource['format'].lower()}"
-        )
+        out_path = data_dir_out / f"{dataset['file_name']}.{resource['format'].lower()}"
         out_path.write_bytes(file_resp.content)
