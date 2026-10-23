@@ -219,4 +219,17 @@ __marimo__/
 
 .DS_Store
 
-data
+# Local data: raw downloads (e.g. the Ottawa zoning bylaw PDF) are too big for git.
+# See README for where to get them.
+data/
+!legacy/data/
+*.pdf
+
+# Jupyter
+.ipynb_checkpoints/
+.jupyter/
+.virtual_documents/
+*.nbconvert.ipynb
+
+# Notebook outputs (figures, exports) written next to notebooks
+notebooks/outputs/
