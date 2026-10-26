@@ -11,6 +11,7 @@ repos:
     rev: v0.0.66
     hooks:
       - id: ty
+        exclude: ^notebooks/|\.ipynb$
 
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
