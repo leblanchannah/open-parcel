@@ -1,0 +1,34 @@
+# M1 baseline: deliberately simple, so later techniques have something to beat.
+# Every experiment is a copy of this file with one thing changed.
+name: baseline
+description: Fixed chunks, one embedding model, top-k vector search, simple prompt.
+
+source:
+  pdf: data/raw/ottawa_zoning_bylaw_2026-50.pdf
+
+ingest:
+  extractor: pymupdf
+  drop_toc_entries: 16 # leftover file bookmarks at the start of the TOC (page -1)
+
+chunking:
+  strategy: pymupdf_to_chunks
+  table_rows_as_chunks: true # large or multi-page tables -> one chunk per row
+  definitions_as_chunks: true # s.199 -> one chunk per term
+  table_settings:
+    snap_x_tolerance: 10
+
+index:
+  embedder: TBD # pick one model and keep it fixed for the baseline
+  store: TBD # in-memory first; pgvector later
+
+retrieval:
+  retriever: vector
+  k: 5
+
+generation:
+  model: TBD
+  prompt: baseline_v1
+
+eval:
+  questions: eval/questions.jsonl
+  metrics: [recall@5, mrr]

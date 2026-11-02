@@ -19,6 +19,7 @@ dependencies = [
     "psycopg2-binary>=2.9.12",
     "psycopg[binary]>=3.3.4",
     "python-dotenv>=1.2.3",
+    "pyyaml>=6.0",
     "requests>=2.34.2",
     "sqlalchemy>=2.0.52",
 ]
@@ -57,14 +58,20 @@ indent-style = "space"
 
 [tool.ty.environment]
 python-version = "3.13"
-# Lets ty resolve the old `open_parcel` imports kept in legacy/.
-extra-paths = ["legacy/src"]
+
+[tool.ty.src]
+# Notebooks are exploratory and legacy/ is reference-only; type-check src/ and tests/ only.
+exclude = ["notebooks/", "legacy/"]
 
 [tool.ty.rules]
 # example: bump specific rules to error/warn if you want stricter defaults
 # possibly-unbound-attribute = "error"
 
-# Notebook-first for now: nothing to build or install as a package.
-# The old src/ package lives in legacy/ for reference.
-[tool.uv]
-package = false
+# src/open_parcel is installed into the venv in editable mode by `uv sync`,
+# so notebooks and tests can `import open_parcel`.
+[build-system]
+requires = ["uv_build>=0.9,<0.12"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
