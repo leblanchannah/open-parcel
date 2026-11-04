@@ -54,5 +54,11 @@ uv run streamlit run chunk_viewer/app.py
     library's own `DEFAULTS` / `WEIGHTS_LAYOUT`
   - **docling** (`HybridChunker`): conversion options plus chunker options. The converted doc is
     cached, so changing chunker params doesn't reconvert the PDF
+- **Compare mode** (on by default): pick chunker A and chunker B (e.g. pymupdf4llm vs docling,
+  or the same chunker with different params). Each gets its own column with the PDF and its
+  boxes on top and its chunk list underneath. The two PDF panes scroll together, and a summary
+  table compares chunk counts, token sizes, multi-page chunks, runtime and element kinds.
+  Turn the toggle off for the single-chunker view.
+- Docling downloads its layout and TableFormer models from Hugging Face on first run.
 - Results are cached per (file, pages, params). "Chunks table / export" shows a table and
   saves the run to `data/ottawa/output/viewer_chunks.parquet`.
