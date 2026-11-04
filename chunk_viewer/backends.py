@@ -14,6 +14,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from .section_paths import fix_section_paths
+
 
 @dataclass
 class ViewChunk:
@@ -87,6 +89,15 @@ def _pymupdf_params() -> list[ParamSpec]:
             help="0 = library default. Table edge threshold passed to parse_document.",
         )
     )
+    specs.append(
+        ParamSpec(
+            "fix_section_paths",
+            True,
+            "post-processing",
+            help="Rebuild heading paths from the bylaw's structure (Section > transect group > "
+            "subheading) instead of font-size depth. The original path is kept in meta.",
+        )
+    )
     for name, default in WEIGHTS_LAYOUT.items():
         specs.append(
             ParamSpec(
@@ -108,6 +119,7 @@ def run_pymupdf(pdf_path: str, first_page: int, last_page: int, params: dict) ->
     from pymupdf4llm.helpers.chunking import WEIGHTS_LAYOUT
 
     params = dict(params)
+    fix_paths = params.pop("fix_section_paths", False)
     weights = {k: params.pop(k) for k in list(params) if k in WEIGHTS_LAYOUT}
     if not params.pop("use_ocr", False):
         params["use_ocr"] = False
@@ -140,6 +152,11 @@ def run_pymupdf(pdf_path: str, first_page: int, last_page: int, params: dict) ->
                 },
             )
         )
+    if fix_paths:
+        for c, fixed in zip(out, fix_section_paths([c.headings for c in out]), strict=True):
+            if fixed != c.headings:
+                c.meta["raw_section_path"] = " > ".join(c.headings)
+            c.headings = fixed
     return out
 
 
